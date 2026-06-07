@@ -128,4 +128,30 @@ def run_agent(user_message: str, history: list) -> str:
 
     Before writing code, complete specs/agent-loop-spec.md.
     """
-    return "🌱 Agent not yet implemented. Complete Milestone 2 to activate the Plant Advisor."
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    for user_msg, assistant_msg in history:
+        messages.append({"role": "user", "content": user_msg})
+        if assistant_msg:
+            messages.append({"role": "assistant", "content": assistant_msg})
+    messages.append({"role": "user", "content": user_message})
+
+    for _ in range(MAX_TOOL_ROUNDS):
+        response = _client.chat(
+            model=LLM_MODEL,
+            messages=messages,
+            tools=TOOL_DEFINITIONS,
+        )
+        assistant_message = response["choices"][0]["message"]
+        tool_calls = assistant_message.get("tool_calls", [])
+        if not tool_calls:
+            return assistant_message["content"]
+        messages.append(assistant_message)
+        for tool_call in tool_calls:
+            tool_response = dispatch_tool(tool_call["name"], tool_call["arguments"])
+            messages.append({
+                "role": "tool",
+                "content": tool_response,
+                "tool_call_id": tool_call["id"],
+            })
+
+    return "I was not able to find an answer before hitting the maximum number of tool calls. Please try rephrasing your question or asking about a different plant."

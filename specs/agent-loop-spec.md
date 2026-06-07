@@ -122,7 +122,7 @@ for tool_call in assistant_message.tool_calls:
 *The loop should stop when: (a) the LLM returns a response with no tool calls, OR (b) the MAX_TOOL_ROUNDS limit is reached. Describe how you will detect each condition and what you will return in each case.*
 
 ```
-[your answer here]
+[To detect the LLM returns a response with no tool calls I will have if statement that will check if tool calls are listed, if they are not then return the message. To detect teh MAX_TOOL_ROUNDS limit, my loop for tool calls with be the max length and if the loop doesn't resolve or return then the default return would be an error that the round limit was reached.]
 ```
 
 ---
@@ -132,7 +132,7 @@ for tool_call in assistant_message.tool_calls:
 *Once the loop exits because there are no more tool calls, how do you extract the text content from the response object? What field holds the string you should return?*
 
 ```
-[your answer here]
+[The field that holds the string we should return is the 'content' field.]
 ```
 
 ---
@@ -145,19 +145,19 @@ for tool_call in assistant_message.tool_calls:
 
 ```
 Query: "How should I care for my calathea?"
-Round 1 tool call: [tool name, args]
-Round 2 tool call: [tool name, args] (if any)
-Final response: [brief description]
+Round 1 tool call: [look_up, "calathea"]
+Round 2 tool call: [Null, Null] (if any)
+Final response: [The agent responded with information to care for the plant such as feeding and light requirements.]
 ```
 
 **What happens when you ask about a plant that isn't in the database?**
 
 ```
-[describe the behavior you observed]
+[When the plant isn't in the database, it does the tool call look_up plant and Fails, from there the LLM is told to use its fall back information and answers the best it can given the information.]
 ```
 
 **One thing about the tool call API that surprised you:**
 
 ```
-[your answer here]
+[One thing that surprised me was that when asked about plants that were not in the database it was good at categorizing the plant and giving general guidance on that plant.]
 ```
